@@ -1,5 +1,8 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
+  skip_forgery_protection only: [:create]
+  cookies["CSRF-TOKEN"] = form_authenticity_token
+  response.set_header('X-CSRF-Token', form_authenticity_token)
 
   private
 

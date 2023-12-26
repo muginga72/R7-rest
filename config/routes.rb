@@ -9,6 +9,14 @@ Rails.application.routes.draw do
   post '/users/sign_out', to: 'users#sign_out'
   get '/test', to: 'test#show'
 
+  namespace :api do
+    namespace :v1 do
+      resources :members do
+        resources :facts
+      end
+    end
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
