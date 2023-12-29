@@ -46,3 +46,12 @@ group :development do
   # gem "spring"
 end
 
+# initial setup: run the the following commands:
+# bin/bundle add devise
+gem "devise", "~> 4.9" 
+
+# bin/bundle add email_validator
+gem "email_validator", "~> 2.2" 
+
+# bin/bundle add strong_password
+gem "strong_password", "~> 0.0.10"
