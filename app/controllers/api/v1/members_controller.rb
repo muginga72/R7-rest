@@ -13,7 +13,7 @@ class Api::V1::MembersController < ApplicationController
   # GET /members/:id
   def show
     if check_access
-      # your code goes here
+      @member = Member.all
       @member = Member.find(params[:id])
     end
   end
@@ -34,7 +34,6 @@ class Api::V1::MembersController < ApplicationController
   # PUT /members/:id
   def update
     if check_access
-      # your code goes here
       if @member.update(member_params)
         redirect_to @member, notice: 'Member was successfully updated.'
       else
