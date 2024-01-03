@@ -36,9 +36,11 @@ class Api::V1::MembersController < ApplicationController
     if check_access
       # your code goes here
       if @member.update(member_params)
-        redirect_to @member, notice: 'Member was successfully updated.'
+        render json: @member, status: 200
       else
-        render :edit
+        render json: { error:
+        "Unable to update member: #{@member.errors.full_messages.to_sentence}"},
+        status: 400
       end
     end
   end
