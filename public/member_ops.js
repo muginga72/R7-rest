@@ -25,6 +25,7 @@ function handle_members(event) {
   const memberId5 = document.getElementById("member-id5");
   const factNumber = document.getElementById("fact-number");
   const factText2 = document.getElementById("fact-text2");
+  const factID = document.getElementById("fact-id");
   const likes2 = document.getElementById("likes2");
   const updateFact = document.getElementById("update-fact");
   const memberId6 = document.getElementById("member-id6");
@@ -159,7 +160,7 @@ function handle_members(event) {
       if (csrf_cookie) {
         headers["X-CSRF-Token"] = csrf_cookie;
       }
-      fetch(`${members_path}/${memberID.value}/facts/${factNumber.value}`, {
+      fetch(`${members_path}/${memberId2.value}`, {
         method: "DELETE",
         headers: headers,
       }).then((response) => {
@@ -185,7 +186,7 @@ function handle_members(event) {
               alert(error);
             });
         }
-      }); // ====== end: Delete member ================
+      }); // ====== /end: Delete member ================
     } else if (event.target === listFacts) {
       fetch(`${members_path}/${memberId3.value}/facts`).then((response) => {
         if (response.status === 200) {
@@ -213,17 +214,21 @@ function handle_members(event) {
       });
     // ============== fetch assignment: Create fact ================
     } else if (event.target === createFact) {
-      let dataObject = {
-        "fact": {
-          memberId: memberID.value,
-          factId: factId.value
-        }
+      var dataObject = {
+        fact_text: factText.value,
+        likes: likes.value,
+      };
+      // should fetch the facts related to specific member
+      console.log(dataObject);
+      let headers = { "Content-Type": "application/json" };
+      let csrf_cookie = getCookie("CSRF-TOKEN");
+      if (csrf_cookie) {
+        headers["X-CSRF-Token"] = csrf_cookie;
       }
-	    // should fetch the facts related to specific member
-      fetch(members_path,
+      fetch(`${members_path}/${memberId4.value}/facts`,
         { method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(dataObject)
+          headers: headers,
+          body: JSON.stringify(dataObject),
         }
       ).then((response) => {
         if (response.status === 201) {
@@ -241,21 +246,19 @@ function handle_members(event) {
             alert(error);
           });
         }
-      }); // ====== end: create fact ================
+      }); // ====== /end: create fact ================
     // ============== fetch assignment: Update fact ================
     } else if (event.target === updateFact) {
       let dataObject = {
-        memberId: memberID.value,
-        factId: factId.value,
-        factText: factText.value,
-        likes: likes.value,
+        fact_text: factText2.value,
+        likes: likes2.value,
       };
       let headers = { "Content-Type": "application/json" };
       let csrf_cookie = getCookie("CSRF-TOKEN");
       if (csrf_cookie) {
         headers["X-CSRF-Token"] = csrf_cookie;
       }
-      fetch(`${members_path}/${memberID.value}`, {
+      fetch(`${members_path}/${memberId5.value}/facts/${factNumber.value}`, {
         method: "PUT",
         headers: headers,
         body: JSON.stringify(dataObject),
@@ -282,7 +285,7 @@ function handle_members(event) {
               alert(error);
             });
         }
-      }); // ====== end: update fact ================
+      }); // ====== /end: update fact ================
     } else if (event.target === showFact) {
       fetch(`${members_path}/${memberId6.value}/facts/${factNumber2.value}`).then(
         (response) => {

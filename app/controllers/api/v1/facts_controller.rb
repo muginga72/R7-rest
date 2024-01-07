@@ -14,49 +14,55 @@ class Api::V1::FactsController < ApplicationController
 
   # GET /members/:member_id/facts/:id
   def show
-    @member = Member.find(params[:member_id])
+    @fact = Fact.find_by(id: params[:id], member_id: params[:member_id])
+    render json: @fact
   end
 
   # POST /members/:member_id/facts
   def create
-    @member = Member.find(params[:member_id])
-    @fact = @member.facts.new(fact_params)
-    if @fact.save
+    if @fact = @member.facts.create(fact_params)
+      @fact.save
       render json: @fact, status: 201
     else
-      render json: { error: 
-"The fact entry could not be created. #{@fact.errors.full_messages.to_sentence}"},
+      render json: { error:
+      "The fact entry could not be created. #{@fact.errors.full_messages.to_sentence}"},
       status: 400
     end
   end
 
   # PUT /members/:member_id/facts/:id
   def update
+    @fact = @member.facts.find(params[:id])
     if @fact.update(fact_params)
-      redirect_to @fact, notice: "Fact was successfully updated."
+      render json: @fact
+    else
+      render json: { error:
+      "Unable to update fact: #{@fact.errors.full_messages.to_sentence}"},
+      status: 400
     end
   end
 
   # DELETE /members/:member_id/facts/:id
   def destroy
+    @fact = @member.facts.find(params[:id])
     @fact.destroy
-    redirect_to facts_url, notice: "Fact was successfully destroyed."
+    render json: { message: 'Fact record successfully deleted.'}, status: 200
   end
 
   private
 
-  def fact_params
-    params.require(:fact).permit(:fact_text, :likes)
-  end
-
-  def set_fact
-    @fact = Fact.find_by(id: params[:id], member_id: params[:member_id])
-  end
-  
-  def check_access 
-    @member = Member.find(params[:member_id])
-    if @member.user_id != current_user.id
-      render json: { message: "The current user is not authorized for that data."}, status: :unauthorized
+    def fact_params
+      params.require(:fact).permit(:fact_text, :likes)
     end
-  end
+
+    def set_fact
+      @fact = Fact.find_by(id: params[:id], member_id: params[:member_id])
+    end
+
+    def check_access
+      @member = Member.find(params[:member_id])
+      if @member.user_id != current_user.id
+        render json: { message: "The current user is not authorized for that data."}, status: :unauthorized
+      end
+    end
 end

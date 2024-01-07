@@ -15,6 +15,7 @@ class Api::V1::MembersController < ApplicationController
     if check_access
       @member = Member.all
       @member = Member.find(params[:id])
+      render json: @member
     end
   end
 
@@ -46,10 +47,8 @@ class Api::V1::MembersController < ApplicationController
 
   # DELETE /members/:id
   def destroy
-    if check_access
-      @member.destroy
-      render json: { message: 'Member record successfully deleted.'}, status: 200
-    end
+    @member.destroy
+    render json: { message: 'Member record successfully deleted.'}, status: 200
   end
 
   private
